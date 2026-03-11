@@ -37,6 +37,7 @@ def main(args):
 
         for step in range(args.local_epoch):
             for data in train_loader:
+                print("====>" + str(data))
                 loss_result_dict = algorithm.update_a(data, opta)
             print_row([step]+[loss_result_dict[item]
                               for item in loss_list], colwidth=15)
@@ -85,11 +86,11 @@ def main(args):
             results['total_cost_time'] = time.time()-sss
             print_row([results[key] for key in print_key], colwidth=15)
 
-            # Save the model for each round
-            output_model_path = os.path.join(args.output_model, f'model_round_{round}.pth')
-            torch.save(algorithm.state_dict(), output_model_path)
-            os.makedirs(os.path.dirname(output_model_path), exist_ok=True)
-            print(f'Model saved to {output_model_path}')
+        # Save the model for each round
+        output_model_path = os.path.join(args.output_model, f'model_round_{round}.pth')
+        os.makedirs(os.path.dirname(output_model_path), exist_ok=True)
+        torch.save(algorithm.state_dict(), output_model_path)
+        print(f'Model saved to {output_model_path}')
 
     print(f'Target acc: {target_acc:.4f}')
 

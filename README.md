@@ -11,8 +11,18 @@ python prepare_dataset.py --data_dir ./data/ --dataset EMG
 if executed successfully, dataset EMG will be saved to ./data/emg
 
 ### 2. train
+```python 
+python train.py --data_dir ./data/ --task cross_people --test_envs 0 --dataset emg --algorithm diversify --latent_domain_num 10 --alpha1 1.0 --alpha 1.0 --lam 0.0 --local_epoch 3 --max_epoch 5 --lr 0.01 --output ./data/train_output/act/cross_people-emg-Diversify-0-10-1-1-0-3-50-0.01 --output_model ./data/model_output
+```
+- specify your dataset with **--data_dir**
+- specify your dataset name with **--dataset**
+- specify a different test group with **--test_envs** if appliable
+- training log will be saved to **--output**
+- generated models will be saved to **--output_model**
+- see other parameters list with **--help**
 
 ### 3. evaluate
+for each training round, the output value 'target acc' is the accuracy value for the model
 
 ## References
 ```
