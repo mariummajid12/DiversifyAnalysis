@@ -1,9 +1,12 @@
 # Experimental Results & Observations
 
-## Experiment 3.1 - Gesture Recognition (EMG Dataset)
+## Experiment 3.1 — Gesture Recognition (EMG Dataset)
 
 ### Setup
-- Dataset: EMG (Electromyography) - cross-people task
+
+![CNN Architecture](./images/cnn_architecture.png)
+
+- Dataset: EMG (Electromyography) — cross-people task
 - Model: CNN skeleton with kernel size 1x9 (Conv2D → BatchNorm → ReLU → MaxPool × 2 → Flatten → Output)
 - Algorithm: Diversify with 10 latent domains
 
@@ -29,10 +32,13 @@
 
 ---
 
-## Experiment 3.2 - Speech Commands Dataset
+## Experiment 3.2 — Speech Commands Dataset
 
 ### Setup
-- Dataset: SpeechCommand subset, 34,975 time series samples across 10 spoken word classes
+
+![Speech Commands Pipeline](./images/speech_commands_pipeline.png)
+
+- Dataset: SpeechCommand subset — 34,975 time series samples across 10 spoken word classes
 - Time series length: 161 with 20 channels (after MFCC feature extraction)
 - Data split: 70% training / 15% validation / 15% test
 
@@ -55,4 +61,5 @@ This experience highlighted a common challenge in ML research reproducibility: i
 | Experiment | Status | Notes |
 |------------|--------|-------|
 | 3.1 Gesture Recognition (EMG) | ✅ Reproduced & exceeded | Results surpassed paper with PyTorch 1.13.1 |
+| 3.2 Speech Commands | ⚠️ Partially attempted | Blocked by incomplete open-source release |
 | 3.2 Speech Commands | ⚠️ Partially attempted | Blocked by incomplete open-source release |
