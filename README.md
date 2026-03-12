@@ -1,64 +1,84 @@
-# Experimental Results & Observations
+# DiversifyAnalysis
 
-## Experiment 3.1 — Gesture Recognition (EMG Dataset)
+Replication of the experiments from the ICLR 2023 paper:
+**"Out-of-distribution Representation Learning for Time Series Classification"** (Lu et al., 2023)
 
-### Setup
+This project was completed as part of the **AI and Cybersecurity** course at the **University of Luxembourg**.
 
-![CNN Architecture](./images/cnn_architecture.png)
+## What This Project Is About
 
-- Dataset: EMG (Electromyography) — cross-people task
-- Model: CNN skeleton with kernel size 1x9 (Conv2D → BatchNorm → ReLU → MaxPool × 2 → Flatten → Output)
-- Algorithm: Diversify with 10 latent domains
+Time series classification models often fail when test data comes from a different distribution than training data — a common problem in real-world deployments. This paper proposes a representation learning approach (Diversify) that improves model robustness against out-of-distribution (OOD) data.
 
-### Results
+This repo reproduces the core experiments from the paper using the EMG (Electromyography) dataset to validate the authors' findings on OOD generalisation for time series classification.
 
-| Method | Target 0 | Target 1 | Target 2 | Target 3 | AVG |
-|--------|----------|----------|----------|----------|-----|
-| ERM | 62.6 | 69.9 | 67.9 | 69.3 | 67.4 |
-| DANN | 62.9 | 70.0 | 66.5 | 68.2 | 66.9 |
-| CORAL | 66.4 | 74.6 | 71.4 | 74.2 | 71.7 |
-| GroupDRO | 67.6 | 77.4 | 73.7 | 72.5 | 72.8 |
-| AdaRNN | 68.8 | 81.1 | 75.3 | 78.1 | 75.8 |
-| **DIVERSIFY (paper, PyTorch 1.7.1)** | **71.7** | **82.4** | **76.9** | **77.3** | **77.1** |
-| **DIVERSIFY (this code, PyTorch 1.13.1)** | **73.1** | **86.8** | **80.4** | **81.6** | **80.5** |
-| **DIVERSIFY (this code, tuned)** | **78.67** | **85** | **76.14** | **74.787** | **78.64** |
+## What I Did
 
-### Observations
+- Reproduced the preprocessing, training, and evaluation pipeline from the original paper
+- Ran experiments on the EMG dataset using the Diversify algorithm
+- Validated the OOD representation learning approach and analysed model accuracy across test groups
 
-- Our reproduction using PyTorch 1.13.1 **exceeded the paper's reported results** (80.5% avg vs 77.1%), likely due to improvements in the newer PyTorch version's optimisation behaviour.
-- After tuning hyperparameters (learning rate, epochs, alpha values), we achieved an average accuracy of **78.64%**, with a peak of **85%** on Target 1.
-- Diversify consistently outperformed all baseline methods (ERM, DANN, CORAL, Mixup, GroupDRO, RSC, ANDMask, AdaRNN), confirming the paper's central claim that latent domain diversification improves OOD generalisation.
-- The improvement over ERM (+11 points avg) demonstrates the value of explicit OOD representation learning for time series classification tasks.
+## Key Concepts
 
----
+- **Out-of-Distribution (OOD) Learning** — training models to generalise beyond the training distribution
+- **Time Series Classification** — classifying sequential data (e.g. sensor readings, network traffic, physiological signals)
+- **Representation Learning** — learning meaningful feature representations that improve generalisation
+- **Diversify Algorithm** — latent domain-based approach to improve OOD robustness
 
-## Experiment 3.2 — Speech Commands Dataset
+## How to Run
 
-### Setup
+### 1. Prerequisites
 
-![Speech Commands Pipeline](./images/speech_commands_pipeline.png)
+```bash
+pip install -r requirements.txt
+```
 
-- Dataset: SpeechCommand subset — 34,975 time series samples across 10 spoken word classes
-- Time series length: 161 with 20 channels (after MFCC feature extraction)
-- Data split: 70% training / 15% validation / 15% test
+### 2. Preprocess Dataset
 
-### Reproducibility Challenge
+Download and prepare the EMG dataset:
 
-The original paper only open-sourced code for the EMG dataset. The Speech Commands experiment required a second processing step (MFCC feature extraction, normalisation) for which the final input data format and shape were not documented.
+```bash
+python prepare_dataset.py --data_dir ./data/ --dataset EMG
+```
 
-We investigated the GitHub issues page of the original repository and found that the authors acknowledged only supporting one dataset publicly. We also contacted the authors directly by email requesting the complete preprocessing code — we did not receive a response.
+If executed successfully, the dataset will be saved to `./data/emg`
 
-As a result, we were unable to fully reproduce Experiment 3.2, despite our efforts to reverse-engineer the preprocessing pipeline.
+### 3. Train
 
-### Takeaway
+```bash
+python train.py --data_dir ./data/ --task cross_people --test_envs 0 --dataset emg --algorithm diversify --latent_domain_num 10 --alpha1 1.0 --alpha 1.0 --lam 0.0 --local_epoch 3 --max_epoch 5 --lr 0.01 --output ./data/train_output/act/cross_people-emg-Diversify-0-10-1-1-0-3-50-0.01 --output_model ./data/model_output
+```
 
-This experience highlighted a common challenge in ML research reproducibility: incomplete open-source releases can make it difficult or impossible to reproduce all reported results, even when the core algorithm is publicly available. This is an active discussion in the research community around reproducibility standards.
+**Key parameters:**
+- `--data_dir` — path to your dataset directory
+- `--dataset` — dataset name (e.g. `emg`)
+- `--test_envs` — specify a different test group if applicable
+- `--output` — training log will be saved here
+- `--output_model` — generated models will be saved here
+- Run `--help` to see the full parameter list
 
----
+### 4. Evaluate
 
-## Summary
+For each training round, the output value `target acc` is the accuracy value for the model.
 
-| Experiment | Status | Notes |
-|------------|--------|-------|
-| 3.1 Gesture Recognition (EMG) | ✅ Reproduced & exceeded | Results surpassed paper with PyTorch 1.13.1 |
-| 3.2 Speech Commands | ⚠️ Partially attempted | Blocked by incomplete open-source release |
+## Technologies Used
+
+- Python
+- PyTorch
+- NumPy / Pandas
+- Machine Learning / OOD Representation Learning
+- Time Series Classification
+
+## Course Context
+
+This replication was completed as part of the **AI and Cybersecurity** course at the University of Luxembourg, exploring the intersection of machine learning robustness and security-relevant applications such as anomaly detection and out-of-distribution generalisation in sensor and network data.
+
+## Reference
+
+```
+@inproceedings{lu2022out,
+  title={Out-of-distribution Representation Learning for Time Series Classification},
+  author={Lu, Wang and Wang, Jindong and Sun, Xinwei and Chen, Yiqiang and Xie, Xing},
+  booktitle={International Conference on Learning Representations},
+  year={2023}
+}
+```
