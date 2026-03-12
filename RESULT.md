@@ -36,7 +36,7 @@
 
 ### Setup
 
-![Speech Commands Pipeline](./images/speech_commands_pipeline.png)
+![Speech Commands Pipeline](./images/speech_commands_pipeline2.png)
 
 - Dataset: SpeechCommand subset — 34,975 time series samples across 10 spoken word classes
 - Time series length: 161 with 20 channels (after MFCC feature extraction)
