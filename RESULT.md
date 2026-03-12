@@ -62,4 +62,3 @@ This experience highlighted a common challenge in ML research reproducibility: i
 |------------|--------|-------|
 | 3.1 Gesture Recognition (EMG) | ✅ Reproduced & exceeded | Results surpassed paper with PyTorch 1.13.1 |
 | 3.2 Speech Commands | ⚠️ Partially attempted | Blocked by incomplete open-source release |
-| 3.2 Speech Commands | ⚠️ Partially attempted | Blocked by incomplete open-source release |
